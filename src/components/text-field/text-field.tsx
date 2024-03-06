@@ -1,10 +1,12 @@
 /* eslint-disable */
+//@ts-nocheck
 import { FunctionComponent, memo, Fragment } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { TextField as MuiTextField, Typography } from '@mui/material';
 import CheckRender from '../check-render/check-render';
 import InputMask from 'react-input-mask';
 import { removeGuionFromString } from '../../utilities/stringUtil';
+import { ErrorOutline } from '@mui/icons-material';
 
 
 const TextField: FunctionComponent<PropTypes> = function ({
@@ -104,14 +106,26 @@ const TextField: FunctionComponent<PropTypes> = function ({
             <MuiTextField
               {...inputProps}
               disabled={disabled}
+
               fullWidth
               variant='outlined'
               placeholder={placeholder}
               type={type}
-              helperText={helperText}
+              helperText={error ? (
+                <div style={{
+
+                  height: '1.9em'
+                }}>
+
+                  <Typography variant="caption" color="error" sx={{ fontSize: '0.65rem' }}>
+                    {helperText}
+                  </Typography>
+                </div>
+              ) : helperText}
               FormHelperTextProps={{ sx: { fontSize: '0.90rem' } }}
               error={error}
               InputProps={{
+                sx: { borderRadius: '5%', },
                 endAdornment: isLoading ? (
                   <CircularProgress size='1em' />
                 )
@@ -138,7 +152,17 @@ const TextField: FunctionComponent<PropTypes> = function ({
             onKeyDown={onKeyDown}
             onClick={onClick}
             type={type}
-            helperText={helperText}
+            helperText={error ? (
+              <div style={{
+
+                height: '1.9em'
+              }}>
+
+                <Typography variant="caption" color="error" sx={{ fontSize: '0.65rem' }}>
+                  {helperText}
+                </Typography>
+              </div>
+            ) : helperText}
             error={error}
             minRows={minRows}
             maxRows={maxRows}
@@ -149,7 +173,7 @@ const TextField: FunctionComponent<PropTypes> = function ({
             /* the mui text field accept inputProps and InputProps but eslint detect as same prop */
             /* eslint-disable */
             InputProps={{
-              sx: { borderRadius: '8%' },
+              sx: { borderRadius: '5%', },
               endAdornment: isLoading ? <CircularProgress size="1em" /> : endAdornment,
               startAdornment,
               inputProps: {
