@@ -6,17 +6,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-function createData(name: string, creditCard: number, dateExp: string) {
-    return { name, creditCard, dateExp };
-}
 
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24),
-    createData('Ice cream sandwich', 237),
-    createData('Eclair', 262, 16.0),
-    createData('Cupcake', 305, 3.7),
-    createData('Gingerbread', 356, 16.0),
-];
 
 function maskCreditCard(value: any) {
     if (value.length >= 6) {
@@ -25,10 +15,11 @@ function maskCreditCard(value: any) {
         return value;
     }
 }
-const cardNumber = '3333333333355555';
-const maskedCard = maskCreditCard(cardNumber);
 
-export default function BasicTable() {
+export default function BasicTable<PropTypes>({ rows, columns }) {
+    console.log(rows)
+    console.log(columns)
+
     return (
         <div
             style={{
@@ -56,23 +47,22 @@ export default function BasicTable() {
                 <Table sx={{ minWidth: 350 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Nombre Titular</TableCell>
-                            <TableCell align="right">Numero de tarjeta</TableCell>
-                            <TableCell align="right">Fecha de vencimiento</TableCell>
+                            {columns.map((item) => (
+                                <TableCell align="left" key={item.accesor}>
+                                    {item.title}
+                                </TableCell>
+                            ))}
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
-                            <TableRow
-                                key={row.name}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell component="th" scope="row">
-                                    {row.name}
-                                </TableCell>
-                                <TableCell align="right">{maskedCard}</TableCell>
-
-                                <TableCell align="right">{row.dateExp}</TableCell>
+                        {rows.map((row: any) => (
+                            <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                {columns.map((column: any) => (
+                                    <TableCell align="left" key={`${column.accesor}-${row.id}`}>
+                                        {/* Aplicar la función maskCreditCard al número de tarjeta de crédito */}
+                                        {column.accesor === 'cardNumber' ? maskCreditCard(row[column.accesor]) : row[column.accesor]}
+                                    </TableCell>
+                                ))}
                             </TableRow>
                         ))}
                     </TableBody>
@@ -81,3 +71,34 @@ export default function BasicTable() {
         </div>
     );
 }
+
+interface PropTypes {
+    id: string;
+    dataLoading?: boolean;
+    columns: {
+        accesor: string;
+        title: string;
+    }[];
+    rows: RowItem[];
+    page: number;
+    pages: number;
+    onPageChange: (newPage: number) => void;
+    tableType?: 'classic' | 'modern';
+    onEditClick: (item: RowItem) => void;
+    onDeleteClick: (item: RowItem) => void;
+    limit: string | number;
+    onLimitChange: (item: string | number) => void;
+
+}
+interface RowItem {
+    [key: string]: string | number | JSX.Element | React.ReactElement | undefined | null | any;
+    id: number | string;
+    customTitle?: string;
+    imageURL?: string;
+}
+
+Table.defaultProps = {
+    tableType: undefined,
+    dataLoading: false,
+    dataToExport: undefined,
+};

@@ -1,5 +1,14 @@
 import * as yup from 'yup';
+const columns = [
 
+    { accesor: 'name', title: 'Nombre' },
+    { accesor: 'cardNumber', title: 'Numero de la tarjeta' },
+    { accesor: 'expirationDate', title: 'Fecha de expiracion' },
+
+    /*     { accesor: 'delete', title: 'Eliminar' },
+        { accesor: 'edit', title: 'Editar' }, */
+];
+export default columns;
 const today = new Date();
 const currentYear = today.getFullYear() % 100;
 

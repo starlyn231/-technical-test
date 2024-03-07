@@ -24,16 +24,36 @@ export const addNewCreditCard = (data: IAddNewCreditCardServiceProps) =>
         .post(`add-creditCard/`, data)
         .then(({ data: responseData }: any) => responseData);
 
-export interface ICreditCardListResponse {
+export interface ICreditCard {
+    success: boolean;
+
+}
+/* export interface ICreditCardListResponse {
     data: {
-        succes: boolean;
-        _id: string;
-        cardholderName: string;
-        expirationDate: string;
-        cardNumber: string;
-        cvv: string;
-        __v: number;
-    }[];
+        success: boolean;
+        data: {
+            _id: string;
+            cardholderName: string;
+            expirationDate: string;
+            cardNumber: string;
+            cvv: string;
+            __v: number;
+        }[];
+    }
+
+} */
+
+export interface ICreditCardListResponse {
+
+    _id: string;
+    cardholderName: string;
+    expirationDate: string;
+    cardNumber: string;
+    cvv: string;
+    __v: number;
+
+
+
 }
 export interface IAddNewCreditCardServiceProps {
     cardNumber: string;

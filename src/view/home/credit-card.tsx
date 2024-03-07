@@ -1,20 +1,21 @@
 /* eslint-disable */
 import './styles/credit-card.css';
 
-import { Grid } from '@mui/material';
+import { Grid, Icon, IconButton, Typography } from '@mui/material';
 import TextField from '../../components/text-field/text-field';
-import { useFormik } from 'formik';
-import {
+import { FormikHelpers, useFormik } from 'formik';
+import columns, {
     FormSchema,
     TCreditCardFormData,
     initialValues,
 } from './credit-card-constants';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ButtonContainer, StyledButtonOutlined } from './styles/Styles';
 import CreditCard from '../../components/card/card-creditcard';
 import BasicTable from '../../components/table/table';
 import creditCardList, { addNewCreditCard } from '../../api/credit-card';
 import { Toast } from '../../components/sweet-alert';
+import LoadingScreen from '../../components/loading-screen';
 
 const CrediCardView = () => {
     const [formInitialState, setFormInitialState] =
@@ -23,18 +24,22 @@ const CrediCardView = () => {
     const [mutationIsLoading, setMutationIsLoading] = useState<boolean>(false);
     const { data, error, isLoading, isFetching, refetch } = creditCardList();
     console.log(data);
+    console.log(columns)
     const formik = useFormik({
         initialValues: formInitialState,
         validationSchema: FormSchema,
         enableReinitialize: true,
-        onSubmit: (values) => {
-            handlePayment(values);
+        onSubmit: (values, actions) => {
+            handlePayment(values, actions);
         },
     });
 
-    const handlePayment = async (formData: TCreditCardFormData) => {
+    const handlePayment = async (
+        formData: TCreditCardFormData,
+        actions: FormikHelpers<TCreditCardFormData>
+    ) => {
         // const response = await addNewGuestService({
-        console.log('formData', formData);
+
         try {
             setMutationIsLoading(true);
             const response = await addNewCreditCard({
@@ -43,7 +48,7 @@ const CrediCardView = () => {
                 cardNumber: formData.creditCard,
                 cvv: formData.cvv,
             });
-            console.log('Tarjeta de crédito creada:', response);
+
             if (response) {
                 await Toast.fire({
                     icon: 'success',
@@ -52,6 +57,7 @@ const CrediCardView = () => {
             }
             await refetch();
             setMutationIsLoading(false);
+            actions.resetForm();
         } catch (error) {
             setMutationIsLoading(false);
             Toast.fire({
@@ -62,7 +68,41 @@ const CrediCardView = () => {
         }
     };
 
-    console.log(creditCards);
+
+    const dataRows = useMemo(
+        () =>
+            data?.data.map((item: any) => ({
+                /* prepare data for table */
+
+                name: item.cardholderName,
+
+                expirationDate: item.expirationDate,
+                cardNumber: item.cardNumber,
+                imageURL: 'https://www.quanzhanketang.com/w3css/img_avatar3.png',
+                /*   delete: (
+                      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                      <IconButton >
+                          <Icon fontSize="medium" color="error">
+                              delete
+                          </Icon>
+                      </IconButton>
+                  ),
+                  edit: (
+                      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                      <IconButton >
+                          <Icon fontSize="medium" color="primary">
+                              settings
+                          </Icon>
+                      </IconButton>
+                  ), */
+            })),
+
+        [data],
+    );
+
+    console.log(dataRows)
+    if (isLoading || typeof dataRows === 'undefined') return <LoadingScreen />;
+    if (error) return <Typography variant="h1">Ha ocurrido un error</Typography>;
     return (
         <>
             <div className="wrapper" id="app">
@@ -159,7 +199,10 @@ const CrediCardView = () => {
                                     </StyledButtonOutlined>
                                 </ButtonContainer>
                                 <ButtonContainer>
-                                    <StyledButtonOutlined variant="outlined">
+                                    <StyledButtonOutlined
+                                        variant="outlined"
+                                        onClick={() => formik.resetForm()}
+                                    >
                                         Cancelar
                                     </StyledButtonOutlined>
                                 </ButtonContainer>
@@ -168,7 +211,7 @@ const CrediCardView = () => {
                     </div>
                 </div>
             </div>
-            <BasicTable />
+            <BasicTable rows={dataRows} columns={columns} />
         </>
     );
 };
