@@ -4,7 +4,6 @@ const today = new Date();
 const currentYear = today.getFullYear() % 100;
 
 export const initialValues: TCreditCardFormData = {
-    id: null,
     name: '',
     creditCard: '',
     expDate: ' ',
@@ -15,7 +14,7 @@ export const initialValues: TCreditCardFormData = {
 
 export const FormSchema = yup
     .object({
-        id: yup.number().nullable(),
+
         name: yup
             .string()
             .required('Este campo es requerido')

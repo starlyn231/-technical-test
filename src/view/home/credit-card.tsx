@@ -4,15 +4,25 @@ import './styles/credit-card.css';
 import { Grid } from '@mui/material';
 import TextField from '../../components/text-field/text-field';
 import { useFormik } from 'formik';
-import { FormSchema, TCreditCardFormData, initialValues } from './credit-card-constants';
+import {
+    FormSchema,
+    TCreditCardFormData,
+    initialValues,
+} from './credit-card-constants';
 import { useState } from 'react';
 import { ButtonContainer, StyledButtonOutlined } from './styles/Styles';
 import CreditCard from '../../components/card/card-creditcard';
 import BasicTable from '../../components/table/table';
+import creditCardList, { addNewCreditCard } from '../../api/credit-card';
+import { Toast } from '../../components/sweet-alert';
+
 const CrediCardView = () => {
     const [formInitialState, setFormInitialState] =
         useState<TCreditCardFormData>(initialValues);
-
+    const [creditCards, setCreditCards] = useState([]);
+    const [mutationIsLoading, setMutationIsLoading] = useState<boolean>(false);
+    const { data, error, isLoading, isFetching, refetch } = creditCardList();
+    console.log(data);
     const formik = useFormik({
         initialValues: formInitialState,
         validationSchema: FormSchema,
@@ -23,12 +33,38 @@ const CrediCardView = () => {
     });
 
     const handlePayment = async (formData: TCreditCardFormData) => {
-        console.log(formData);
+        // const response = await addNewGuestService({
+        console.log('formData', formData);
+        try {
+            setMutationIsLoading(true);
+            const response = await addNewCreditCard({
+                name: formData.name,
+                expDate: formData.expDate,
+                cardNumber: formData.creditCard,
+                cvv: formData.cvv,
+            });
+            console.log('Tarjeta de crédito creada:', response);
+            if (response) {
+                await Toast.fire({
+                    icon: 'success',
+                    title: 'Tarjeta agregado correctamente.',
+                });
+            }
+            await refetch();
+            setMutationIsLoading(false);
+        } catch (error) {
+            setMutationIsLoading(false);
+            Toast.fire({
+                icon: 'error',
+                title: 'Ha ocurrido un error inesperado.',
+            });
+            console.error('Error al crear la tarjeta de crédito:', error);
+        }
     };
 
+    console.log(creditCards);
     return (
         <>
-
             <div className="wrapper" id="app">
                 <div className="card-form">
                     <CreditCard
@@ -47,7 +83,7 @@ const CrediCardView = () => {
                                 spacing={{ xs: 1, md: 2 }}
                                 columns={{ xs: 4, sm: 8, md: 12, lg: 16 }}
                             >
-                                <Grid item xs={12} sm={6} md={6} lg={8}  >
+                                <Grid item xs={12} sm={6} md={6} lg={8}>
                                     <TextField
                                         title="Número de Tarjeta"
                                         id="creditCard"
@@ -57,7 +93,8 @@ const CrediCardView = () => {
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={
-                                            formik.touched.creditCard && Boolean(formik.errors.creditCard)
+                                            formik.touched.creditCard &&
+                                            Boolean(formik.errors.creditCard)
                                         }
                                         helperText={
                                             formik.touched.creditCard && formik.errors.creditCard
@@ -65,7 +102,7 @@ const CrediCardView = () => {
                                         required
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6} md={6} lg={8} >
+                                <Grid item xs={12} sm={6} md={6} lg={8}>
                                     <TextField
                                         title="Fecha Vencimiento"
                                         id="expDate"
@@ -82,7 +119,7 @@ const CrediCardView = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} sm={6} md={6} lg={8} >
+                                <Grid item xs={12} sm={6} md={6} lg={8}>
                                     <TextField
                                         title="Nombre Titular"
                                         id="name"
@@ -95,7 +132,7 @@ const CrediCardView = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} sm={6} md={6} lg={8} >
+                                <Grid item xs={12} sm={6} md={6} lg={8}>
                                     <TextField
                                         title="CVV"
                                         id="cvv"
@@ -118,7 +155,7 @@ const CrediCardView = () => {
                                         colorletter="white"
                                         bg="blue"
                                     >
-                                        Agregar Tarjeta
+                                        {mutationIsLoading ? 'Cargando...' : 'Agregar tarjeta'}
                                     </StyledButtonOutlined>
                                 </ButtonContainer>
                                 <ButtonContainer>
@@ -130,11 +167,9 @@ const CrediCardView = () => {
                         </div>
                     </div>
                 </div>
-
             </div>
             <BasicTable />
         </>
-
     );
 };
 

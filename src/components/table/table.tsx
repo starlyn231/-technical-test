@@ -30,10 +30,29 @@ const maskedCard = maskCreditCard(cardNumber);
 
 export default function BasicTable() {
     return (
-        <div style={{ width: '80%', margin: '0 auto' }}>
-            <h2 style={{ textAlign: 'center' }}>Tabla de Tarjetas</h2>
-
-            <TableContainer component={Paper}>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: '100%',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                borderRadius: '12px',
+                backgroundColor: 'rgb(240, 240, 240)',
+                padding: '20px',
+                borderTop: '2px solid beige',
+            }}
+        >
+            <h2 style={{ textAlign: 'center' }}>Información de los clientes</h2>
+            <TableContainer
+                component={Paper}
+                sx={{
+                    width: '80%',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.7)',
+                    borderRadius: '12px',
+                    padding: '20px',
+                }}
+            >
                 <Table sx={{ minWidth: 350 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
