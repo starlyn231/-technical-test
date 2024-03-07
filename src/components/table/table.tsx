@@ -17,8 +17,6 @@ function maskCreditCard(value: any) {
 }
 
 export default function BasicTable<PropTypes>({ rows, columns }) {
-    console.log(rows)
-    console.log(columns)
 
     return (
         <div
@@ -44,7 +42,7 @@ export default function BasicTable<PropTypes>({ rows, columns }) {
                     padding: '20px',
                 }}
             >
-                <Table sx={{ minWidth: 350 }} aria-label="simple table">
+                <Table sx={{ minWidth: 350 }} aria-label="customized table">
                     <TableHead>
                         <TableRow>
                             {columns.map((item) => (
@@ -80,14 +78,7 @@ interface PropTypes {
         title: string;
     }[];
     rows: RowItem[];
-    page: number;
-    pages: number;
-    onPageChange: (newPage: number) => void;
-    tableType?: 'classic' | 'modern';
-    onEditClick: (item: RowItem) => void;
-    onDeleteClick: (item: RowItem) => void;
-    limit: string | number;
-    onLimitChange: (item: string | number) => void;
+
 
 }
 interface RowItem {
@@ -97,8 +88,4 @@ interface RowItem {
     imageURL?: string;
 }
 
-Table.defaultProps = {
-    tableType: undefined,
-    dataLoading: false,
-    dataToExport: undefined,
-};
+

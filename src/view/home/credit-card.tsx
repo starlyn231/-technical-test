@@ -9,12 +9,16 @@ import columns, {
     TCreditCardFormData,
     initialValues,
 } from './credit-card-constants';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ButtonContainer, StyledButtonOutlined } from './styles/Styles';
 import CreditCard from '../../components/card/card-creditcard';
 import BasicTable from '../../components/table/table';
-import creditCardList, { addNewCreditCard } from '../../api/credit-card';
-import { Toast } from '../../components/sweet-alert';
+import creditCardList, {
+    addNewCreditCard,
+    deleteCreditCardService,
+    updateCreditCardService,
+} from '../../api/credit-card';
+import { SweetAlert, Toast } from '../../components/sweet-alert';
 import LoadingScreen from '../../components/loading-screen';
 
 const CrediCardView = () => {
@@ -23,15 +27,20 @@ const CrediCardView = () => {
     const [creditCards, setCreditCards] = useState([]);
     const [mutationIsLoading, setMutationIsLoading] = useState<boolean>(false);
     const { data, error, isLoading, isFetching, refetch } = creditCardList();
-    console.log(data);
-    console.log(columns)
+
     const formik = useFormik({
         initialValues: formInitialState,
         validationSchema: FormSchema,
         enableReinitialize: true,
         onSubmit: (values, actions) => {
-            handlePayment(values, actions);
+            console.log(values)
+            if (!values.id) {
+                handlePayment(values, actions);
+            } else {
+                updateFormData(values);
+            }
         },
+
     });
 
     const handlePayment = async (
@@ -67,40 +76,144 @@ const CrediCardView = () => {
             console.error('Error al crear la tarjeta de crédito:', error);
         }
     };
+    console.log(formik.values)
+    const updateFormData = (formData: TCreditCardFormData) => {
 
+        (async () => {
+            try {
+                console.log(formData)
+                const response = await updateCreditCardService({
+                    _id: formData.id,
+                    cardholderName: formData.name,
+                    expirationDate: formData.expDate,
+                    cardNumber: formData.creditCard,
+                    cvv: formData.cvv,
+                });
+
+                if (response) {
+                    await Toast.fire({
+                        icon: 'success',
+                        title: 'Registro Actualizado correctamente.',
+                    });
+
+                    await refetch();
+                    formik.resetForm()
+                } else {
+                    await Toast.fire({
+                        icon: 'error',
+                        title: 'Ha ocurrido un error inesperado.',
+                    });
+                }
+                setMutationIsLoading(false);
+            } catch (err) {
+                setMutationIsLoading(false);
+                await Toast.fire({
+                    icon: 'error',
+                    title: 'Error .',
+                });
+            }
+        })().catch((err) => {
+            // Manejar errores en la ejecución del IIFE (opcional)
+            console.error('Error en IIFE:', err);
+        });
+    };
+    const deleteItem = useCallback(
+        async (id: string) => {
+            try {
+                const response = await deleteCreditCardService(id);
+                await refetch();
+                if (response.success) {
+                    await Toast.fire({
+                        icon: 'success',
+                        title: 'Registro eliminado correctamente.',
+                    });
+                } else {
+                    await Toast.fire({
+                        icon: 'error',
+                        title: 'Ha ocurrido un error inesperado.',
+                    });
+                }
+            } catch (err) {
+                console.log('Error');
+            }
+        },
+        [refetch],
+    )
+    const handleOnEditClick = (_data: { _id: number | string }) => {
+        const selectedRecord = data?.data.find(
+            (selectedItem) => selectedItem._id === _data._id
+        );
+        console.log(' selectedRecord', selectedRecord)
+
+        if (selectedRecord !== undefined) {
+            const formikFieldMappings: TCreditCardFormData = {
+                id: selectedRecord._id,
+                name: selectedRecord.cardholderName,
+                creditCard: selectedRecord.cardNumber,
+                expDate: selectedRecord.expirationDate,
+                cvv: selectedRecord.cvv,
+            };
+
+            formik.setValues(formikFieldMappings).then(
+                () => { },
+                () => { }
+            );
+        }
+    };
+    const handleOnDeleteClick = (_data: { _id: number | string }) => {
+        (async () => {
+            const selectedRecord = data?.data.find(
+                (selectedItem) => selectedItem._id === _data._id
+            );
+
+            if (!selectedRecord) {
+                console.log('Registro no encontrado');
+                return;
+            }
+            const result = await SweetAlert.fire({
+                icon: 'warning',
+                title: '¿Está seguro que desea eliminar este registro',
+                text: 'Una vez ejecutada esta acción no podrá deshacerla',
+                showDenyButton: true,
+                confirmButtonText: 'Confirmar',
+                denyButtonText: 'Cancelar',
+            });
+            if (result.isConfirmed) {
+                await deleteItem(selectedRecord?._id);
+            }
+        })().catch((err) => {
+            // Manejar errores en la ejecución del IIFE (opcional)
+            console.error('Error en IIFE:', err);
+        });
+    };
+    const memoizedHandleOnEditClick = useCallback(handleOnEditClick, [data, formik]);
+    const memoizedHandleOnDeleteClick = useCallback(handleOnDeleteClick, [data, deleteItem]);
 
     const dataRows = useMemo(
         () =>
             data?.data.map((item: any) => ({
                 /* prepare data for table */
-
                 name: item.cardholderName,
-
                 expirationDate: item.expirationDate,
                 cardNumber: item.cardNumber,
-                imageURL: 'https://www.quanzhanketang.com/w3css/img_avatar3.png',
-                /*   delete: (
-                      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                      <IconButton >
-                          <Icon fontSize="medium" color="error">
-                              delete
-                          </Icon>
-                      </IconButton>
-                  ),
-                  edit: (
-                      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                      <IconButton >
-                          <Icon fontSize="medium" color="primary">
-                              settings
-                          </Icon>
-                      </IconButton>
-                  ), */
+                delete: (
+                    <IconButton onClick={() => memoizedHandleOnDeleteClick(item)}>
+                        <Icon fontSize="medium" color="error">
+                            delete
+                        </Icon>
+                    </IconButton>
+                ),
+                edit: (
+                    <IconButton onClick={() => memoizedHandleOnEditClick(item)}>
+                        <Icon fontSize="medium" color="primary">
+                            settings
+                        </Icon>
+                    </IconButton>
+                ),
             })),
-
-        [data],
+        [data, memoizedHandleOnDeleteClick, memoizedHandleOnEditClick],
     );
 
-    console.log(dataRows)
     if (isLoading || typeof dataRows === 'undefined') return <LoadingScreen />;
     if (error) return <Typography variant="h1">Ha ocurrido un error</Typography>;
     return (
@@ -195,7 +308,9 @@ const CrediCardView = () => {
                                         colorletter="white"
                                         bg="blue"
                                     >
-                                        {mutationIsLoading ? 'Cargando...' : 'Agregar tarjeta'}
+                                        {mutationIsLoading
+                                            ? 'Cargando...'
+                                            : `${formik.values.id ? 'Guardar' : 'Agregar'}`}
                                     </StyledButtonOutlined>
                                 </ButtonContainer>
                                 <ButtonContainer>

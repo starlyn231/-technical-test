@@ -4,8 +4,7 @@ import chipImage from '../../assets/images/chip-tarjeta.png';
 import visaImg from '../../assets/images/visa.png';
 const CreditCard = ({ name, cardNumber, date }) => {
     const [month, year] = date.split('/').length ? date.split('/') : ['', ''];
-    console.log(month); // Resultado: "01"
-    console.log(year); // Resultado: "24"
+
     return (
         <section className="tarjeta" id="tarjeta">
             <div className="delantera">

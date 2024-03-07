@@ -27,7 +27,17 @@ export const addNewCreditCard = (data: IAddNewCreditCardServiceProps) =>
 export interface ICreditCard {
     success: boolean;
 
-}
+}export const updateCreditCardService = (data: any) =>
+    api
+        .put(`/edit-creditcard/${data._id}`, data)
+        .then(({ data: responseData }: any) => responseData);
+
+export const deleteCreditCardService = (id: string) =>
+    api
+        .delete(`/delete-creditcard/${id}`)
+        .then(({ data: responseData }: any) => responseData);
+
+
 /* export interface ICreditCardListResponse {
     data: {
         success: boolean;
