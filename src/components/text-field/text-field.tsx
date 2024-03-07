@@ -8,7 +8,6 @@ import InputMask from 'react-input-mask';
 import { removeGuionFromString } from '../../utilities/stringUtil';
 import { ErrorOutline } from '@mui/icons-material';
 
-
 const TextField: FunctionComponent<PropTypes> = function ({
   title,
   required,
@@ -37,28 +36,46 @@ const TextField: FunctionComponent<PropTypes> = function ({
   size,
   mask,
   useMaskPresets,
-  unMaskedValue
+  unMaskedValue,
 }) {
   const removeTextFromInputMaskValue = (value: any) => {
     /*  let NewValue = value.replace(/[^0-9\.]+/g, '');
      return NewValue; */
     let NewValue = removeGuionFromString(value);
     return NewValue;
-
-  }
+  };
 
   const maskPresets = {
-    cvv: "999",
-    expDate: "99/99",
-    passport: "*",
-    rnc: "9-99-99999-9",
-    'solo numero': "999999999999999999999999999",
-    mascaraRut: "aa-aaaa-9999-99999"
-  }
+    cvv: '999',
+    expDate: '99/99',
+    passport: '*',
+    rnc: '9-99-99999-9',
+    'solo numero': '999999999999999999999999999',
+    mascaraRut: 'aa-aaaa-9999-99999',
+  };
+  const inputStyles = {
+    '& .MuiInputBase-input': {
+      width: '100%',
+      fontSize: '17px',
+      backgroundColor: 'transparent',
+      padding: 1,
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderRadius: '10px',
+        minHeight: '40px',
+        borderWidth: '1px',
+      },
+    },
+    '&:hover fieldset': {},
+    '&.Mui-focused fieldset': {
+      borderColor: 'blue',
+    },
+  };
 
   return (
     <Fragment key={id}>
-      <Typography variant="caption">
+      <Typography variant="caption" fontWeight={'bold'} fontSize={'15px'}>
         {title}
         <CheckRender allowed={required}>
           <Typography variant="caption" color="error">
@@ -66,125 +83,139 @@ const TextField: FunctionComponent<PropTypes> = function ({
           </Typography>
         </CheckRender>
       </Typography>
-      {
-        mask ? <InputMask
+      {mask ? (
+        <InputMask
           id={id}
           mask={useMaskPresets ? maskPresets[mask] : mask}
           maskChar={null}
           value={value}
           disabled={disabled}
           onBlur={
-            unMaskedValue ?
-              (e) => {
-                onBlur && onBlur({
-                  target:
-                  {
-                    id: e.target.id,
-                    value: removeTextFromInputMaskValue(e.target.value)
-                  }
-                })
+            unMaskedValue
+              ? (e) => {
+                onBlur &&
+                  onBlur({
+                    target: {
+                      id: e.target.id,
+                      value: removeTextFromInputMaskValue(e.target.value),
+                    },
+                  });
               }
-              :
-              onBlur
+              : onBlur
           }
           onChange={
-            unMaskedValue ?
-              (e) => {
+            unMaskedValue
+              ? (e) => {
                 onChange({
-                  target:
-                  {
+                  target: {
                     id: e.target.id,
-                    value: removeTextFromInputMaskValue(e.target.value)
-                  }
-                })
+                    value: removeTextFromInputMaskValue(e.target.value),
+                  },
+                });
               }
-              :
-              onChange
-          }>
-
-          {(inputProps) =>
+              : onChange
+          }
+        >
+          {(inputProps) => (
             <MuiTextField
               {...inputProps}
               disabled={disabled}
-
+              sx={inputStyles}
               fullWidth
-              variant='outlined'
+              variant="outlined"
               placeholder={placeholder}
               type={type}
-              helperText={error ? (
-                <div style={{
-
-                  height: '1.9em'
-                }}>
-
-                  <Typography variant="caption" color="error" sx={{ fontSize: '0.65rem' }}>
-                    {helperText}
-                  </Typography>
-                </div>
-              ) : helperText}
+              helperText={
+                error ? (
+                  <div
+                    style={{
+                      height: '2em',
+                    }}
+                  >
+                    <Typography
+                      variant="caption"
+                      color="error"
+                      sx={{ fontSize: '0.58rem' }}
+                    >
+                      {helperText}
+                    </Typography>
+                  </div>
+                ) : (
+                  helperText
+                )
+              }
               FormHelperTextProps={{ sx: { fontSize: '0.90rem' } }}
               error={error}
               InputProps={{
-                sx: { borderRadius: '5%', },
+                /*     sx: { borderRadius: '5%' }, */
                 endAdornment: isLoading ? (
-                  <CircularProgress size='1em' />
-                )
-                  :
-                  endAdornment !== undefined ? endAdornment
-                    :
-                    null
+                  <CircularProgress size="1em" />
+                ) : endAdornment !== undefined ? (
+                  endAdornment
+                ) : null,
               }}
             />
-          }
+          )}
         </InputMask>
-          :
-          <MuiTextField
-
-            fullWidth
-            size={size}
-            disabled={disabled}
-            multiline={multiline}
-            id={id}
-            placeholder={placeholder}
-            value={value}
-            onBlur={onBlur}
-            onChange={onChange}
-            onKeyDown={onKeyDown}
-            onClick={onClick}
-            type={type}
-            helperText={error ? (
-              <div style={{
-
-                height: '1.9em'
-              }}>
-
-                <Typography variant="caption" color="error" sx={{ fontSize: '0.65rem' }}>
+      ) : (
+        <MuiTextField
+          sx={inputStyles}
+          fullWidth
+          size={size}
+          disabled={disabled}
+          multiline={multiline}
+          id={id}
+          placeholder={placeholder}
+          value={value}
+          onBlur={onBlur}
+          onChange={onChange}
+          onKeyDown={onKeyDown}
+          onClick={onClick}
+          type={type}
+          helperText={
+            error ? (
+              <div
+                style={{
+                  height: '1.9em',
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ fontSize: '0.65rem' }}
+                >
                   {helperText}
                 </Typography>
               </div>
-            ) : helperText}
-            error={error}
-            minRows={minRows}
-            maxRows={maxRows}
-
-            //  maxLength={maxLength}
-            // minLength={minLength}
-            autoFocus={autoFocus}
-            /* the mui text field accept inputProps and InputProps but eslint detect as same prop */
-            /* eslint-disable */
-            InputProps={{
-              sx: { borderRadius: '5%', },
-              endAdornment: isLoading ? <CircularProgress size="1em" /> : endAdornment,
-              startAdornment,
-              inputProps: {
-                max,
-                min,
-                maxLength,
-                minLength,
-              },
-            }}
-          />
-      }
+            ) : (
+              helperText
+            )
+          }
+          error={error}
+          minRows={minRows}
+          maxRows={maxRows}
+          //  maxLength={maxLength}
+          // minLength={minLength}
+          autoFocus={autoFocus}
+          /* the mui text field accept inputProps and InputProps but eslint detect as same prop */
+          /* eslint-disable */
+          InputProps={{
+            /*         sx: { borderRadius: '5%' }, */
+            endAdornment: isLoading ? (
+              <CircularProgress size="1em" />
+            ) : (
+              endAdornment
+            ),
+            startAdornment,
+            inputProps: {
+              max,
+              min,
+              maxLength,
+              minLength,
+            },
+          }}
+        />
+      )}
     </Fragment>
   );
 };

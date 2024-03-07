@@ -47,7 +47,7 @@ export const FormSchema = yup
                     const expiryYear = parseInt(year, 10);
                     const expiryMonth = parseInt(month, 10);
                     return (
-                        expiryYear >= currentYear &&
+                        expiryYear >= currentYear - 2 &&
                         expiryYear <= currentYear + 5 &&
                         expiryMonth >= 1 &&
                         expiryMonth <= 12

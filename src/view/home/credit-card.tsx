@@ -1,4 +1,4 @@
-/* eslint-disable */
+
 import './styles/credit-card.css';
 
 import { Grid, Icon, IconButton, Typography } from '@mui/material';
@@ -24,7 +24,6 @@ import LoadingScreen from '../../components/loading-screen';
 const CrediCardView = () => {
     const [formInitialState, setFormInitialState] =
         useState<TCreditCardFormData>(initialValues);
-    const [creditCards, setCreditCards] = useState([]);
     const [mutationIsLoading, setMutationIsLoading] = useState<boolean>(false);
     const { data, error, isLoading, isFetching, refetch } = creditCardList();
 
@@ -33,22 +32,19 @@ const CrediCardView = () => {
         validationSchema: FormSchema,
         enableReinitialize: true,
         onSubmit: (values, actions) => {
-            console.log(values)
+            console.log(values);
             if (!values.id) {
                 handlePayment(values, actions);
             } else {
                 updateFormData(values);
             }
         },
-
     });
 
     const handlePayment = async (
         formData: TCreditCardFormData,
         actions: FormikHelpers<TCreditCardFormData>
     ) => {
-        // const response = await addNewGuestService({
-
         try {
             setMutationIsLoading(true);
             const response = await addNewCreditCard({
@@ -76,12 +72,11 @@ const CrediCardView = () => {
             console.error('Error al crear la tarjeta de crédito:', error);
         }
     };
-    console.log(formik.values)
+    console.log(formik.values);
     const updateFormData = (formData: TCreditCardFormData) => {
-
         (async () => {
             try {
-                console.log(formData)
+                console.log(formData);
                 const response = await updateCreditCardService({
                     _id: formData.id,
                     cardholderName: formData.name,
@@ -97,7 +92,7 @@ const CrediCardView = () => {
                     });
 
                     await refetch();
-                    formik.resetForm()
+                    formik.resetForm();
                 } else {
                     await Toast.fire({
                         icon: 'error',
@@ -137,13 +132,13 @@ const CrediCardView = () => {
                 console.log('Error');
             }
         },
-        [refetch],
-    )
+        [refetch]
+    );
     const handleOnEditClick = (_data: { _id: number | string }) => {
         const selectedRecord = data?.data.find(
             (selectedItem) => selectedItem._id === _data._id
         );
-        console.log(' selectedRecord', selectedRecord)
+        console.log(' selectedRecord', selectedRecord);
 
         if (selectedRecord !== undefined) {
             const formikFieldMappings: TCreditCardFormData = {
@@ -186,8 +181,14 @@ const CrediCardView = () => {
             console.error('Error en IIFE:', err);
         });
     };
-    const memoizedHandleOnEditClick = useCallback(handleOnEditClick, [data, formik]);
-    const memoizedHandleOnDeleteClick = useCallback(handleOnDeleteClick, [data, deleteItem]);
+    const memoizedHandleOnEditClick = useCallback(handleOnEditClick, [
+        data,
+        formik,
+    ]);
+    const memoizedHandleOnDeleteClick = useCallback(handleOnDeleteClick, [
+        data,
+        deleteItem,
+    ]);
 
     const dataRows = useMemo(
         () =>
@@ -211,7 +212,7 @@ const CrediCardView = () => {
                     </IconButton>
                 ),
             })),
-        [data, memoizedHandleOnDeleteClick, memoizedHandleOnEditClick],
+        [data, memoizedHandleOnDeleteClick, memoizedHandleOnEditClick]
     );
 
     if (isLoading || typeof dataRows === 'undefined') return <LoadingScreen />;
@@ -225,18 +226,18 @@ const CrediCardView = () => {
                         cardNumber={formik.values.creditCard}
                         date={formik.values.expDate}
                     />
-                    {/* Aquí van los campos del formulario */}
+
                     <div className="card-form__inner">
-                        {/* Campos de entrada */}
+
                         <div className="card-input">
                             <Grid
                                 alignItems="center"
                                 container
-                                sx={{ marginBottom: '25px' }}
-                                spacing={{ xs: 1, md: 2 }}
-                                columns={{ xs: 4, sm: 8, md: 12, lg: 16 }}
+                                sx={{ marginBottom: '30px' }}
+                                spacing={{ xs: 1, md: 3 }}
+
                             >
-                                <Grid item xs={12} sm={6} md={6} lg={8}>
+                                <Grid item xs={12} sm={6} md={6} lg={6} >
                                     <TextField
                                         title="Número de Tarjeta"
                                         id="creditCard"
@@ -255,7 +256,7 @@ const CrediCardView = () => {
                                         required
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6} md={6} lg={8}>
+                                <Grid item xs={12} sm={6} md={6} lg={6}>
                                     <TextField
                                         title="Fecha Vencimiento"
                                         id="expDate"
@@ -272,9 +273,10 @@ const CrediCardView = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} sm={6} md={6} lg={8}>
+                                <Grid item xs={12} sm={6} md={6} lg={6}>
                                     <TextField
                                         title="Nombre Titular"
+                                        maxLength={25}
                                         id="name"
                                         value={formik.values.name}
                                         onChange={formik.handleChange}
@@ -285,7 +287,7 @@ const CrediCardView = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} sm={6} md={6} lg={8}>
+                                <Grid item xs={12} sm={6} md={6} lg={6}>
                                     <TextField
                                         title="CVV"
                                         id="cvv"
@@ -300,7 +302,7 @@ const CrediCardView = () => {
                                 </Grid>
                             </Grid>
 
-                            <div style={{ display: 'flex' }}>
+                            <div style={{ display: 'flex', }}>
                                 <ButtonContainer>
                                     <StyledButtonOutlined
                                         onClick={formik.handleSubmit}
