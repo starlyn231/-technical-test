@@ -121,6 +121,7 @@ const Home = () => {
             try {
                 const response = await deleteCreditCardService(id);
                 await refetch();
+                formik.resetForm();
                 if (response.success) {
                     await Toast.fire({
                         icon: 'success',
@@ -318,7 +319,7 @@ const Home = () => {
                                     >
                                         {mutationIsLoading
                                             ? 'Cargando...'
-                                            : `${formik.values.id ? 'Guardar' : 'Agregar Tarjeta'}`}
+                                            : `${formik.values.id ? 'Guardar' : 'Agregar'}`}
                                     </StyledButtonOutlined>
                                 </ButtonContainer>
                                 <ButtonContainer>

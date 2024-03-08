@@ -135,7 +135,7 @@ const TextField: FunctionComponent<PropTypes> = function ({
                     <Typography
                       variant="caption"
                       color="error"
-                      sx={{ fontSize: '0.58rem' }}
+                      sx={{ fontSize: '0.57rem' }}
                     >
                       {helperText}
                     </Typography>

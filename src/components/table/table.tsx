@@ -6,8 +6,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-
-
 function maskCreditCard(value: any) {
     if (value.length >= 6) {
         return value.slice(0, 2) + '*'.repeat(value.length - 6) + value.slice(-4);
@@ -17,7 +15,6 @@ function maskCreditCard(value: any) {
 }
 
 export default function BasicTable<PropTypes>({ rows, columns }) {
-
     return (
         <div
             style={{
@@ -54,11 +51,16 @@ export default function BasicTable<PropTypes>({ rows, columns }) {
                     </TableHead>
                     <TableBody>
                         {rows.map((row: any) => (
-                            <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                            <TableRow
+                                key={row.id}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
                                 {columns.map((column: any) => (
                                     <TableCell align="left" key={`${column.accesor}-${row.id}`}>
                                         {/* Aplicar la función maskCreditCard al número de tarjeta de crédito */}
-                                        {column.accesor === 'cardNumber' ? maskCreditCard(row[column.accesor]) : row[column.accesor]}
+                                        {column.accesor === 'cardNumber'
+                                            ? maskCreditCard(row[column.accesor])
+                                            : row[column.accesor]}
                                     </TableCell>
                                 ))}
                             </TableRow>
@@ -78,14 +80,17 @@ interface PropTypes {
         title: string;
     }[];
     rows: RowItem[];
-
-
 }
 interface RowItem {
-    [key: string]: string | number | JSX.Element | React.ReactElement | undefined | null | any;
+    [key: string]:
+    | string
+    | number
+    | JSX.Element
+    | React.ReactElement
+    | undefined
+    | null
+    | any;
     id: number | string;
     customTitle?: string;
     imageURL?: string;
 }
-
-

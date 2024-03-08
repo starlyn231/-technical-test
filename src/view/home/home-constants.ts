@@ -20,8 +20,6 @@ export const initialValues: TCreditCardFormData = {
     cvv: '',
 };
 
-
-
 export const FormSchema = yup
     .object({
         id: yup.string().nullable(),
