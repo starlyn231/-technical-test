@@ -1,15 +1,19 @@
 /* eslint-disable */
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './App.css'
-import CrediCardView from './view/home/credit-card'
+import Home from './view/home/home';
 
 function App() {
+  const queryClient = new QueryClient();
 
 
   return (
-    <>
-      <CrediCardView />
-    </>
+    <QueryClientProvider client={queryClient}>
+      <Home />
+    </QueryClientProvider>
+
+
   )
 }
 

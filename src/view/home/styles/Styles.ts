@@ -6,32 +6,21 @@ interface StyledButtonProps extends ButtonProps {
     bg?: 'blue' | 'gray';
 }
 export const StyledButtonOutlined = styled(Button)<StyledButtonProps>(props => ({
-    minHeight: '28px',
+
     width: '100%',
     color: props.colorletter == 'white' ? ' white' : ' black',
-    background: props.bg == 'blue' ? ' blue' : ' gray',
+    background: props.bg == 'blue' ? ' #004481' : ' lightgray',
     borderRadius: '40px',
     marginRight: '17px',
-    '@media (min-width:320px)': {
-        fontSize: '12px',
-    },
-    '@media (min-width:768px)': {
-        fontSize: '13.5px',
-    },
-    '@media (min-width:1200px)': {
-        fontSize: '15px',
-    },
+    fontSize: '11px',
     '&:hover,&:focus,&:active': {
-        color: 'white',
+        background: props.bg === 'blue' ? '#00356c' : 'lightgray',
 
     }
 }));
 
 export const ButtonContainer = styled('div')({
 
-    marginTop: '20px ',
     marginRight: '7px'
-
-
 
 });
