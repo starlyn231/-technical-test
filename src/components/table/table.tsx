@@ -5,6 +5,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { FunctionComponent } from 'react';
 
 function maskCreditCard(value: any) {
     if (value.length >= 6) {
@@ -14,7 +15,7 @@ function maskCreditCard(value: any) {
     }
 }
 
-export default function BasicTable<PropTypes>({ rows, columns }) {
+export default function BasicTable({ rows, columns }: PropTypes) {
     return (
         <div
             style={{
