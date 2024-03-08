@@ -230,8 +230,10 @@ interface PropTypes {
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   type?: string;
+  mask?: string;
   error?: boolean;
   required?: boolean;
+  unMaskedValue?: boolean;
   multiline?: boolean;
   minLength?: number;
   maxLength?: number;
@@ -259,7 +261,10 @@ TextField.defaultProps = {
   onBlur: undefined,
   onKeyDown: undefined,
   type: 'text',
+  mask: '',
   error: false,
+
+  unMaskedValue: false,
   required: false,
   multiline: false,
   minLength: undefined,

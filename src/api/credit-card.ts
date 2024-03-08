@@ -2,7 +2,7 @@ import { api } from '../services/api-service';
 import { useQuery } from '@tanstack/react-query';
 
 const getCreditCartList = () =>
-    api.get(`/creditCard`).then(({ data }: ICreditCardListResponse) => data);
+    api.get(`/creditCard`).then(({ data }: any) => data);
 
 const creditCardList = () => {
     const { data, error, isLoading, isFetching, refetch } = useQuery({
@@ -38,31 +38,15 @@ export const deleteCreditCardService = (id: string) =>
         .then(({ data: responseData }: any) => responseData);
 
 
-/* export interface ICreditCardListResponse {
-    data: {
-        success: boolean;
-        data: {
-            _id: string;
-            cardholderName: string;
-            expirationDate: string;
-            cardNumber: string;
-            cvv: string;
-            __v: number;
-        }[];
-    }
 
-} */
 
 export interface ICreditCardListResponse {
-
     _id: string;
     cardholderName: string;
     expirationDate: string;
     cardNumber: string;
     cvv: string;
     __v: number;
-
-
 
 }
 export interface IAddNewCreditCardServiceProps {

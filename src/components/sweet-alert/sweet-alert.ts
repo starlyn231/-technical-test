@@ -7,12 +7,12 @@ export const SweetAlert = Swal.mixin({
     title: 'title',
     container: 'message',
   },
-  confirmButtonColor: '#59bc7c',
+  confirmButtonColor: ' #59bc7c',
 });
 
 export const Toast = SweetAlert.mixin({
   toast: true,
-  position: 'top-right',
+  position: 'top-end',
   iconColor: 'white',
   customClass: {
     container: 'container',
@@ -22,3 +22,4 @@ export const Toast = SweetAlert.mixin({
   timer: 2500,
   timerProgressBar: true,
 });
+

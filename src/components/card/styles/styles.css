@@ -1,0 +1,77 @@
+/* ---------- Estilos Generales de las row ----------*/
+.row {
+    width: 100%;
+
+    max-width: 400px;
+    height: 170px;
+    position: relative;
+    color: #fff;
+    transition: 0.3s ease all;
+    transform-style: preserve-3d;
+    cursor: pointer;
+    z-index: 2;
+    margin-bottom: 90px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.row.active {
+    transform: rotateY(180deg);
+}
+
+.row>div {
+    padding: 20px;
+    border-radius: 12px;
+
+    min-height: 170px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 10px 10px 0 rgba(90, 116, 148, 0.3);
+}
+
+/* ---------- Tarjeta front-card ----------*/
+
+.row .front-card {
+    width: 100%;
+    background: url(../../../assets/images/bg-tarjeta-02.jpg);
+    background-size: cover;
+}
+
+.front-card .logo-marca {
+    text-align: right;
+    min-height: 50px;
+}
+
+.front-card .logo-marca img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: 80px;
+}
+
+.front-card .chip {
+    width: 100%;
+    max-width: 50px;
+    margin-bottom: 20px;
+}
+
+.front-card .grupo .label {
+    font-size: 12px;
+    color: #7d8994;
+    margin-bottom: 5px;
+}
+
+.front-card .grupo .numero,
+.front-card .grupo .nombre,
+.front-card .grupo .expiracion {
+    color: #fff;
+    font-size: 22px;
+    text-transform: uppercase;
+}
+
+.front-card .flexbox {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}

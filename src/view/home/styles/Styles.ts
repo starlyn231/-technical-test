@@ -21,9 +21,6 @@ export const StyledButtonOutlined = styled(Button)<StyledButtonProps>(props => (
 
 export const ButtonContainer = styled('div')({
 
-
     marginRight: '7px'
-
-
 
 });

@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './App.css'
-import CrediCardView from './view/home/credit-card'
+import Home from './view/home/home';
 
 function App() {
   const queryClient = new QueryClient();
@@ -10,7 +10,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CrediCardView />
+      <Home />
     </QueryClientProvider>
 
 

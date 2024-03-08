@@ -1,6 +1,4 @@
-
-import './styles/credit-card.css';
-
+import './styles/home-style.css';
 import { Grid, Icon, IconButton, Typography } from '@mui/material';
 import TextField from '../../components/text-field/text-field';
 import { FormikHelpers, useFormik } from 'formik';
@@ -8,7 +6,7 @@ import columns, {
     FormSchema,
     TCreditCardFormData,
     initialValues,
-} from './credit-card-constants';
+} from './home-constants';
 import { useCallback, useMemo, useState } from 'react';
 import { ButtonContainer, StyledButtonOutlined } from './styles/Styles';
 import CreditCard from '../../components/card/card-creditcard';
@@ -21,11 +19,11 @@ import creditCardList, {
 import { SweetAlert, Toast } from '../../components/sweet-alert';
 import LoadingScreen from '../../components/loading-screen';
 
-const CrediCardView = () => {
+const Home = () => {
     const [formInitialState, setFormInitialState] =
         useState<TCreditCardFormData>(initialValues);
     const [mutationIsLoading, setMutationIsLoading] = useState<boolean>(false);
-    const { data, error, isLoading, isFetching, refetch } = creditCardList();
+    const { data, error, isLoading, refetch } = creditCardList();
 
     const formik = useFormik({
         initialValues: formInitialState,
@@ -63,6 +61,9 @@ const CrediCardView = () => {
             await refetch();
             setMutationIsLoading(false);
             actions.resetForm();
+            setTimeout(() => {
+                window.scrollTo(0, 1000);
+            }, 2500);
         } catch (error) {
             setMutationIsLoading(false);
             Toast.fire({
@@ -72,7 +73,7 @@ const CrediCardView = () => {
             console.error('Error al crear la tarjeta de crédito:', error);
         }
     };
-    console.log(formik.values);
+
     const updateFormData = (formData: TCreditCardFormData) => {
         (async () => {
             try {
@@ -93,6 +94,9 @@ const CrediCardView = () => {
 
                     await refetch();
                     formik.resetForm();
+                    setTimeout(() => {
+                        window.scrollTo(0, 1000);
+                    }, 1000);
                 } else {
                     await Toast.fire({
                         icon: 'error',
@@ -136,7 +140,7 @@ const CrediCardView = () => {
     );
     const handleOnEditClick = (_data: { _id: number | string }) => {
         const selectedRecord = data?.data.find(
-            (selectedItem) => selectedItem._id === _data._id
+            (selectedItem: { _id: string }) => selectedItem._id === _data._id
         );
         console.log(' selectedRecord', selectedRecord);
 
@@ -154,11 +158,13 @@ const CrediCardView = () => {
                 () => { }
             );
         }
+
+        window.scrollTo(0, 0);
     };
     const handleOnDeleteClick = (_data: { _id: number | string }) => {
         (async () => {
             const selectedRecord = data?.data.find(
-                (selectedItem) => selectedItem._id === _data._id
+                (selectedItem: { _id: string }) => selectedItem._id === _data._id
             );
 
             if (!selectedRecord) {
@@ -228,16 +234,14 @@ const CrediCardView = () => {
                     />
 
                     <div className="card-form__inner">
-
                         <div className="card-input">
                             <Grid
                                 alignItems="center"
                                 container
                                 sx={{ marginBottom: '30px' }}
                                 spacing={{ xs: 1, md: 3 }}
-
                             >
-                                <Grid item xs={12} sm={6} md={6} lg={6} >
+                                <Grid item xs={12} sm={6} md={6} lg={6}>
                                     <TextField
                                         title="Número de Tarjeta"
                                         id="creditCard"
@@ -302,17 +306,19 @@ const CrediCardView = () => {
                                 </Grid>
                             </Grid>
 
-                            <div style={{ display: 'flex', }}>
+                            <div style={{ display: 'flex' }}>
                                 <ButtonContainer>
                                     <StyledButtonOutlined
-                                        onClick={formik.handleSubmit}
-                                        variant="container"
+                                        onClick={() => {
+                                            formik.handleSubmit(); // Llama a la función handleSubmit de formik con el evento
+                                        }}
+                                        variant="contained"
                                         colorletter="white"
                                         bg="blue"
                                     >
                                         {mutationIsLoading
                                             ? 'Cargando...'
-                                            : `${formik.values.id ? 'Guardar' : 'Agregar'}`}
+                                            : `${formik.values.id ? 'Guardar' : 'Agregar Tarjeta'}`}
                                     </StyledButtonOutlined>
                                 </ButtonContainer>
                                 <ButtonContainer>
@@ -333,4 +339,4 @@ const CrediCardView = () => {
     );
 };
 
-export default CrediCardView;
+export default Home;
